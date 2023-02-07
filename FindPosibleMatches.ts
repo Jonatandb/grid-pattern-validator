@@ -1,9 +1,9 @@
-import { Grid, Matrix } from "./Grid";
-import { Coordinate, GridPattern } from "./GridPattern";
+import Grid, { Matrix } from "./Grid";
+import GridPattern, { Coordinate } from "./GridPattern";
 
 export class FindPosibleMatches {
     
-    private static posibleMatches(mygrid: Grid, pattern: GridPattern) {
+    private static posibleMatches(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
         // my grid limits
         const gridRowsLimit = mygrid.getRowLimit()
         const gridColumnsLimit = mygrid.getColumnLimit()
@@ -41,6 +41,7 @@ export class FindPosibleMatches {
     static run(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
         // return this.runMatch(mygrid, pattern)
         const posibleMatches = this.posibleMatches(mygrid, pattern)
+        // invert pattern to check match on inverted orientation
         pattern.invert()
         const posibleMatchesInverted = this.posibleMatches(mygrid, pattern)
         return posibleMatches.concat(posibleMatchesInverted)

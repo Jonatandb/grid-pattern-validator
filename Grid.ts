@@ -2,7 +2,7 @@ type Cell = unknown
 type Row = Cell[]
 export type Matrix = Row[]
 
-export class Grid {
+export default class Grid {
     protected matrix: Matrix
     // private field
     private rowLimit: number
