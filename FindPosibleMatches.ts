@@ -15,10 +15,10 @@ export class FindPosibleMatches {
 
         for (let row = 0; row < gridRowsLimit; row++) {      
             for (let column = 0; column < gridColumnsLimit; column++) {
-                const gridSizeColumns = gridColumnsLimit - column
-                const gridSizeRows = gridRowsLimit - row
+                const partialGridSizeColumns = gridColumnsLimit - column
+                const partialGridSizeRows = gridRowsLimit - row
                 // Take subgrid
-                if (gridSizeColumns >= patternColumnsLimit && gridSizeRows >= patternRowsLimit) {
+                if (partialGridSizeColumns >= patternColumnsLimit && partialGridSizeRows >= patternRowsLimit) {
                     let subGrid: Matrix = []
                     for (let patternRow = 0; patternRow < patternRowsLimit; patternRow++) {
                         subGrid.push(mygrid.getRow(row+patternRow).slice(column, column+patternColumnsLimit))
@@ -39,7 +39,6 @@ export class FindPosibleMatches {
     }
 
     static run(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
-        // return this.runMatch(mygrid, pattern)
         const posibleMatches = this.posibleMatches(mygrid, pattern)
         // invert pattern to check match on inverted orientation
         pattern.invert()
