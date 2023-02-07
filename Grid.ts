@@ -7,13 +7,11 @@ export class Grid {
     // private field
     private rowLimit: number
     private columnLimit: number
-    private inverted: boolean
     
     constructor(matrix: Matrix) {
         this.rowLimit = matrix.length
         this.columnLimit = matrix[0].length
         this.matrix = matrix
-        this.inverted = false
     }
 
     getMatrix(): Matrix {
@@ -44,10 +42,5 @@ export class Grid {
         this.matrix = patternInverted
         this.rowLimit = this.matrix.length
         this.columnLimit = this.matrix[0].length
-        this.inverted = !this.inverted
-    }
-
-    isInverted(): boolean {
-        return this.inverted
     }
 }
