@@ -30,11 +30,12 @@ export default class Grid {
         return this.matrix[index]
     }
 
-    invert() {
+    // Rotate Grid to the right
+    rotate() {
         const patternInverted: Matrix = []
         for (let row = 0; row < this.matrix[0].length; row++) {
             let rowToAdd: Row = []
-            for (let column = 0; column < this.matrix.length; column++) {
+            for (let column = this.matrix.length-1; column > -1; column--) {
                 rowToAdd.push(this.matrix[column][row])
             }
             patternInverted.push(rowToAdd)

@@ -41,7 +41,7 @@ export class FindPosibleMatches {
     static run(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
         const posibleMatches = this.posibleMatches(mygrid, pattern)
         // invert pattern to check match on inverted orientation
-        pattern.invert()
+        pattern.rotate()
         const posibleMatchesInverted = this.posibleMatches(mygrid, pattern)
         return posibleMatches.concat(posibleMatchesInverted)
     }

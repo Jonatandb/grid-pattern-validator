@@ -6,7 +6,7 @@ export type Coordinate = [RowPostion, ColumnPosition]
 // override with type number
 type Cell = number
 
-export default class GridPattern extends Grid{
+export default class GridPattern extends Grid {
 
     match(grid: Matrix): Coordinate[]|false {
         let mainValue: Cell = 0
