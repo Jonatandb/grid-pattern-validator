@@ -1,7 +1,7 @@
 import Grid, { Matrix } from "./Grid";
 import GridPattern, { Coordinate } from "./GridPattern";
 
-export class FindPosibleMatches {
+export class FindPatternInGrid {
     
     private static posibleMatches(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
         // my grid limits
@@ -40,9 +40,17 @@ export class FindPosibleMatches {
 
     static run(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
         const posibleMatches = this.posibleMatches(mygrid, pattern)
-        // invert pattern to check match on inverted orientation
+        // rotate pattern to check match on rotated pattern orientation
+        pattern.rotate()
+        const posibleMatchesRotated = this.posibleMatches(mygrid, pattern)
         pattern.rotate()
         const posibleMatchesInverted = this.posibleMatches(mygrid, pattern)
-        return posibleMatches.concat(posibleMatchesInverted)
+        pattern.rotate()
+        const posibleMatchesInvertedRotated = this.posibleMatches(mygrid, pattern)
+        return posibleMatches
+                .concat(posibleMatchesInverted)
+                .concat(posibleMatchesRotated)
+                .concat(posibleMatchesInverted)
+                .concat(posibleMatchesInvertedRotated)
     }
 }

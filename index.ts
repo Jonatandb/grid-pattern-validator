@@ -1,9 +1,10 @@
-import { FindPosibleMatches } from "./FindPosibleMatches";
+import { FindPatternInGrid } from "./FindPatternInGrid";
 import Grid from "./Grid";
 import GridPattern from "./GridPattern";
 
 const gridGenerator = (limitRow: number, limitColumns: number) => {
-    const GEMS: string[] = ["🍇" , "🍌" , "🍍" , "🍎" , "🍏" , "🍐" ,"🍑" ] 
+    const GEMS: string[] = ["🟣","⚪","🔴","🔵","🟡","🟢","🟤" ] 
+    // const GEMS: string[] = ["🍇" , "🍌" , "🍍" , "🍎" , "🍏" , "🍐" ,"🍑" ] 
     const grid: string[][] = []
     let show = ' '
     for (let col = 0; col < limitColumns; col++) {
@@ -22,31 +23,27 @@ const gridGenerator = (limitRow: number, limitColumns: number) => {
     return grid
 }
 
+const show = (matrix: any) => {
+    matrix.forEach((element: any) => {
+        console.log(element)
+    });
+}
 
 const patterns = [
     [
         [1,0,1,1],
     ],[
-        [1,1,0,1],
-    ],[
         [1,1,0],
         [0,0,1],
     ],[
         [1,0,1],
         [0,1,0],
     ],[
-        [1,0,0],
-        [0,1,1],
-    ],[
         [0,1,1],
         [1,0,0],
-    ],[
-        [0,1,0],
-        [1,0,1],
-    ],[ 
-        [0,0,1],
-        [1,1,0],
 ]]
+
+
 
 console.log('******************************************\n*         GRID PATTERN VALIDATOR         *\n******************************************\n\n')
 
@@ -54,7 +51,9 @@ let posibleMatches: any = []
 const grid = new Grid(gridGenerator(10,8));
 for (const matrix of patterns) {
     const pattern = new GridPattern(matrix);
-    posibleMatches = posibleMatches.concat(FindPosibleMatches.run(grid, pattern))
+    console.log('Pattern')
+    show(matrix)
+    posibleMatches = posibleMatches.concat(FindPatternInGrid.run(grid, pattern))
     
 }
 console.log('----------------------------------------')
@@ -63,7 +62,7 @@ console.log(posibleMatches)
 
 console.log('----------------------------------------')
 console.log('check MATCH 3')
-console.log(FindPosibleMatches.run(grid, new GridPattern([[1,1,1]])))
+console.log(FindPatternInGrid.run(grid, new GridPattern([[1,1,1]])))
 console.log('----------------------------------------')
 console.log('check MATCH 4')
-console.log(FindPosibleMatches.run(grid, new GridPattern([[1,1,1,1]])))
+console.log(FindPatternInGrid.run(grid, new GridPattern([[1,1,1,1]])))
