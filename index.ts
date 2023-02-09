@@ -4,7 +4,6 @@ import GridPattern from "./GridPattern";
 
 const gridGenerator = (limitRow: number, limitColumns: number) => {
     const GEMS: string[] = ["🟣","⚪","🔴","🔵","🟡","🟢","🟤" ] 
-    // const GEMS: string[] = ["🍇" , "🍌" , "🍍" , "🍎" , "🍏" , "🍐" ,"🍑" ] 
     const grid: string[][] = []
     let show = ' '
     for (let col = 0; col < limitColumns; col++) {

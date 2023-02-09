@@ -13,7 +13,7 @@ export class FindPatternInGrid {
         // List of posible matches
         let posibleMatches: Coordinate[][] = []
 
-        for (let row = 0; row < gridRowsLimit; row++) {      
+        for (let row = 0; row < gridRowsLimit; row++) { 
             for (let column = 0; column < gridColumnsLimit; column++) {
                 const partialGridSizeColumns = gridColumnsLimit - column
                 const partialGridSizeRows = gridRowsLimit - row
@@ -48,7 +48,6 @@ export class FindPatternInGrid {
         pattern.rotate()
         const posibleMatchesInvertedRotated = this.posibleMatches(mygrid, pattern)
         return posibleMatches
-                .concat(posibleMatchesInverted)
                 .concat(posibleMatchesRotated)
                 .concat(posibleMatchesInverted)
                 .concat(posibleMatchesInvertedRotated)
