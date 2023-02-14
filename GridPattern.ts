@@ -1,8 +1,6 @@
+import { Coordinate } from "./Coodinate"
 import Grid, { Matrix } from "./Grid"
 
-type RowPostion = number
-type ColumnPosition = number
-export type Coordinate = [RowPostion, ColumnPosition]
 // override with type number
 type Cell = number
 
@@ -18,12 +16,12 @@ export default class GridPattern extends Grid {
         let mainValue: Cell = 0
         let coordinates: Coordinate[] = []
 
-        for (let row = 0; row < this.matrix.length; row++) {
-            for (let column = 0; column < this.matrix[row].length; column++) {
+        for (let row = 0; row < this.rowLimit; row++) {
+            for (let column = 0; column < this.columnLimit; column++) {
                 const currentElement: Cell = grid[row][column] as Cell
-                const cellState = this.matrix[row][column]
+                const cellState = this.getCell(new Coordinate(row, column))
                 // store the first active element from the pattern
-                if (mainValue==0 && cellState) {
+                if (cellState==PatternCellStates.Match && mainValue==0) {
                     mainValue = currentElement as Cell
                 }
                 if (cellState==PatternCellStates.Match && mainValue!=currentElement) {
@@ -31,7 +29,7 @@ export default class GridPattern extends Grid {
                 } else if (cellState==PatternCellStates.NotMatch && mainValue==currentElement) {
                     return false
                 } else if (cellState==PatternCellStates.Match && mainValue==currentElement) {
-                    coordinates.push([row, column])
+                    coordinates.push(new Coordinate(row, column))
                 }
             }
         }

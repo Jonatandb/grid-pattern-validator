@@ -1,9 +1,12 @@
+import { Coordinate } from "./Coodinate";
 import Grid, { Matrix } from "./Grid";
-import GridPattern, { Coordinate } from "./GridPattern";
+import GridPattern from "./GridPattern";
+
+type MatchCoordinates = Coordinate[]
 
 export class FindPatternInGrid {
     
-    private static posibleMatches(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
+    private static posibleMatches(mygrid: Grid, pattern: GridPattern): MatchCoordinates[] {
         // my grid limits
         const gridRowsLimit = mygrid.getRowLimit()
         const gridColumnsLimit = mygrid.getColumnLimit()
@@ -11,7 +14,7 @@ export class FindPatternInGrid {
         const patternRowsLimit = pattern.getRowLimit()
         const patternColumnsLimit = pattern.getColumnLimit()
         // List of posible matches
-        let posibleMatches: Coordinate[][] = []
+        let posibleMatches: MatchCoordinates[] = []
 
         for (let row = 0; row < gridRowsLimit; row++) { 
             for (let column = 0; column < gridColumnsLimit; column++) {
@@ -24,13 +27,11 @@ export class FindPatternInGrid {
                         subGrid.push(mygrid.getRow(row+patternRow).slice(column, column+patternColumnsLimit))
                     }
                     // Check if subgrid match with pattern
-                    const matrixPositions = pattern.match(subGrid)
-                    if (matrixPositions) {
-                        const rearrangedPosition: Coordinate[] = []
-                        matrixPositions.forEach(matrixPosition => {
-                            rearrangedPosition.push([ matrixPosition[0]+row, matrixPosition[1]+column])
-                        });
-                        posibleMatches.push(rearrangedPosition)
+                    const matrixCoordenates = pattern.match(subGrid)
+                    if (matrixCoordenates) {
+                        const rearrange: MatchCoordinates = []
+                        matrixCoordenates.forEach(coordinate => rearrange.push(new Coordinate(coordinate.getX()+row, coordinate.getY()+column)));
+                        posibleMatches.push(rearrange)
                     }
                 }
             }
