@@ -2,12 +2,11 @@ import { Coordinate } from "./Coodinate"
 import Grid, { Matrix } from "./Grid"
 
 // override with type number
-type Cell = number
+type Cell = 0|1
 
 enum PatternCellStates {
     Match = 1,
     Any = 0,
-    NotMatch = -1,
 }
 
 export default class GridPattern extends Grid {
@@ -25,8 +24,6 @@ export default class GridPattern extends Grid {
                     mainValue = currentElement as Cell
                 }
                 if (cellState==PatternCellStates.Match && mainValue!=currentElement) {
-                    return false
-                } else if (cellState==PatternCellStates.NotMatch && mainValue==currentElement) {
                     return false
                 } else if (cellState==PatternCellStates.Match && mainValue==currentElement) {
                     coordinates.push(new Coordinate(row, column))

@@ -40,14 +40,14 @@ export class FindPatternInGrid {
     }
 
     static run(mygrid: Grid, pattern: GridPattern): Coordinate[][] {
-        const posibleMatches = this.posibleMatches(mygrid, pattern)
+        const posibleMatches = FindPatternInGrid.posibleMatches(mygrid, pattern)
         // rotate pattern to check match on rotated pattern orientation
         pattern.rotate()
-        const posibleMatchesRotated = this.posibleMatches(mygrid, pattern)
+        const posibleMatchesRotated = FindPatternInGrid.posibleMatches(mygrid, pattern)
         pattern.rotate()
-        const posibleMatchesInverted = this.posibleMatches(mygrid, pattern)
+        const posibleMatchesInverted = FindPatternInGrid.posibleMatches(mygrid, pattern)
         pattern.rotate()
-        const posibleMatchesInvertedRotated = this.posibleMatches(mygrid, pattern)
+        const posibleMatchesInvertedRotated = FindPatternInGrid.posibleMatches(mygrid, pattern)
         return posibleMatches
                 .concat(posibleMatchesRotated)
                 .concat(posibleMatchesInverted)

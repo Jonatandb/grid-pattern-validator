@@ -20,19 +20,17 @@ export const showRotated = async (grid: string[][], _empty: boolean|null= null) 
     }
     console.log(header+'\n')
     let c = 0
+    let toShow: string= ""
     for (const row of newGrid.getMatrix()) {
         // _empty is just to show empty cells
-        if (_empty) {
-            let empty_row = JSON.stringify(row)
-            for (const tf of GEMS_TO_FILL) {
-                empty_row = empty_row.split(tf).join("  ")
-            }
-            console.log(c+'   '+empty_row.replace('["',"").replace('"]',"").split('","').join("   ")+'\n')   
-        } else {
-            console.log(c+'   '+JSON.stringify(row).replace('["',"").replace('"]',"").split('","').join("   ")+'\n')   
+        toShow+= c+ ""
+        for (const cell of row) {
+            toShow+="   "+ (_empty && GEMS_TO_FILL.includes(cell as string) ? "  " : cell)
         }
+        toShow+="\n\n"
         c++
     }
+    console.log(toShow)
     await sleep(SLEEP_SECONDS)
 }
 
