@@ -57,31 +57,40 @@ const verifySpecialGemsGeneration = async (grid: Grid) => {
 
     // if rainbow found
     if (rainbows.length) {
-        rainbowsCounter++
-        // change match4 by explosion and put ray
-        for (const group of rainbows) {
-            let countGroup = 0 // to select when drop the gem
-            for (const coordinate of group) {
+        // change match5 by explosion and put ray
+        for (const rainbow of rainbows) {
+            let countDrop = 0 // to select when drop the gem
+            for (const coordinate of rainbow) {
                 const currentCell = grid.getCell(coordinate)
                 if (currentCell!=EXPLOSION && SPECIAL_GEM_RAINBOW!=currentCell) {
-                    const newValue = countGroup==2 ? SPECIAL_GEM_RAINBOW : EXPLOSION
-                    console.log(SPECIAL_GEM_RAINBOW)
-                    countGroup+= grid.putInCell(coordinate, newValue) ? 1 : 0
+                    let newValue=""
+                    if (countDrop==2) {
+                        newValue=SPECIAL_GEM_RAINBOW
+                        rainbowsCounter++
+                    } else {
+                        newValue=EXPLOSION
+                    }
+                    countDrop+=grid.putInCell(coordinate, newValue) ? 1 : 0
                 }
             }
         }
     }
     // if bomb found
     if (bombs.length) {
-        bombsCounter++
-        // change match4 by explosion and put bomb
-        for (const group of bombs) {
-            let countGroup = 0 // to select when drop the gem
-            for (const coordinate of group) {
+        // change match T or L(long) by explosion and put bomb
+        for (const bomb of bombs) {
+            let countDrop = 0 // to select when drop the gem
+            for (const coordinate of bomb) {
                 const currentCell = grid.getCell(coordinate)
                 if (currentCell!=EXPLOSION && !SPECIAL_GEMS_BOMB.includes(currentCell as string) && SPECIAL_GEM_RAINBOW!=currentCell) {
-                    const newValue = countGroup==2 ? SPECIAL_GEMS_BOMB[GEMS.indexOf(currentCell as string)] : EXPLOSION
-                    countGroup+= grid.putInCell(coordinate, newValue) ? 1 : 0
+                    let newValue=""
+                    if (countDrop==2) {
+                        newValue=SPECIAL_GEMS_BOMB[GEMS.indexOf(currentCell as string)]
+                        bombsCounter++
+                    } else {
+                        newValue=EXPLOSION
+                    }
+                    countDrop+=grid.putInCell(coordinate, newValue) ? 1 : 0
                 }
             }
         }
@@ -90,13 +99,19 @@ const verifySpecialGemsGeneration = async (grid: Grid) => {
     if (rays.length) {
         raysCounter++
         // change match4 by explosion and put ray
-        for (const group of rays) {
-            let countGroup = 0 // to select when drop the gem
-            for (const coordinate of group) {
+        for (const ray of rays) {
+            let countDrop = 0 // to select when drop the gem
+            for (const coordinate of ray) {
                 const currentCell = grid.getCell(coordinate)
                 if (currentCell!=EXPLOSION && !SPECIAL_GEMS_RAY_H.includes(currentCell as string) && !SPECIAL_GEMS_BOMB.includes(currentCell as string) && SPECIAL_GEM_RAINBOW!=currentCell) {
-                    const newValue = countGroup==1 ? SPECIAL_GEMS_RAY_H[GEMS.indexOf(currentCell as string)] : EXPLOSION
-                    countGroup+= grid.putInCell(coordinate, newValue) ? 1 : 0
+                    let newValue=""
+                    if (countDrop==2) {
+                        newValue=SPECIAL_GEMS_RAY_H[GEMS.indexOf(currentCell as string)]
+                        raysCounter++
+                    } else {
+                        newValue=EXPLOSION
+                    }
+                    countDrop+= grid.putInCell(coordinate, newValue) ? 1 : 0
                 }
             }
         }
@@ -113,9 +128,10 @@ const verifyMatch3 = async (grid: Grid): Promise<number> => {
         match3Counter++
         // change match3 by explosion
         const exploded: Coordinate[] = []
-        for (const group of match3) {
-            for (const coordinate of group) {
-                if (grid.getCell(coordinate)!=EXPLOSION) {
+        for (const m3Coords of match3) {
+            for (const coordinate of m3Coords) {
+                const currentCell = grid.getCell(coordinate)
+                if (currentCell!=EXPLOSION) {
                     if (grid.putInCell(coordinate, EXPLOSION)) {
                         exploded.push(coordinate)
                     }
@@ -154,7 +170,7 @@ const action = async (fromX:number|null=null, fromY:number|null=null, toX:number
         // verify match 3
         let match3Counter = await verifyMatch3(grid)
 
-        const rightMovement = !!(match3Counter+specialGemsCreated) // if generated gems or match3 found it's right movements
+        const rightMovement = !!(match3Counter+specialGemsCreated) // if generated gems or match3 found it's right movement
         do {
             await explodeRemoveFill(grid)
             // verify special gems generation

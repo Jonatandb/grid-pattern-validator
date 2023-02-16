@@ -50,10 +50,10 @@ export default class Grid {
         const [cfromX, cfromY] = coordinateFrom.getXY()
         const [cToX, cToY] = coordinateTo.getXY()
         // only can swap with a next cell ( up / right / down / left ) and cannot move to the same point
-        const validMomement = !(cfromX==cToX && cfromY==cToY) && ((cfromX==cToX && Math.abs(cfromY-cToY)==1) || (Math.abs(cfromX-cToX)==1 && cfromY==cToY))
+        const validMovement = !(cfromX==cToX && cfromY==cToY) && ((cfromX==cToX && Math.abs(cfromY-cToY)==1) || (Math.abs(cfromX-cToX)==1 && cfromY==cToY))
         // validate limits and movement
         if ((cfromX >= 0 && cfromX < this.rowLimit && cfromY >= 0 && cfromY < this.columnLimit) &&
-        (cToX >= 0 && cToX < this.rowLimit && cToY >= 0 && cToY < this.columnLimit) && validMomement) {
+        (cToX >= 0 && cToX < this.rowLimit && cToY >= 0 && cToY < this.columnLimit) && validMovement) {
             const aux = this.getCell(coordinateFrom)
             this.matrix[cfromX][cfromY] = this.getCell(coordinateTo)
             this.matrix[cToX][cToY] = aux
