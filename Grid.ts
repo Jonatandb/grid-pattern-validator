@@ -1,6 +1,6 @@
-import { Coordinate } from "./Coodinate"
+import { Coordinate } from "./Coordinate"
 
-type Cell = unknown
+export type Cell = unknown
 type Row = Cell[]
 export type Matrix = Row[]
 

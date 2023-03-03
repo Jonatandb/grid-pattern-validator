@@ -1,4 +1,4 @@
-import { Coordinate } from "./Coodinate";
+import { Coordinate } from "./Coordinate";
 import Grid, { Matrix } from "./Grid";
 import GridPattern from "./GridPattern";
 
