@@ -1,7 +1,7 @@
 import clc from "cli-color";
 const cy = clc.yellow
 
-export const SLEEP_SECONDS = 3
+export const SLEEP_SECONDS = 1
 
 export const EXPLOSION = "💥"
 export const GEMS: string[] = ["🟣","⚪","🔴","🔵","🟡","🟢","🟤"]

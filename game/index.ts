@@ -1,4 +1,4 @@
-import { Coordinate } from "../Coodinate";
+import { Coordinate } from "../Coordinate";
 import { FindPatternInGrid } from "../FindPatternInGrid";
 import Grid from "../Grid";
 import GridPattern from "../GridPattern";
@@ -36,19 +36,21 @@ const explodeRemoveFill = async (grid: Grid) => {
 }
 
 const verifySpecialGemsGeneration = async (grid: Grid) => {
+    // Count how many times a rainbow was found
+    let rainbows = FindPatternInGrid.run(grid, new GridPattern(PATTERNS_RAINBOW))
+    let rainbowsDict: DictionaryCounter = {}
+    // Count how many times a ray was found
+    let rays = FindPatternInGrid.run(grid, new GridPattern(PATTERNS_RAY))
+    let raysDict: DictionaryCounter = {}
     // Count how many times a bomb was found
-    let bombsCounter: number = 0
     let bombs: Coordinate[][] = []
     for (const patern of PATTERNS_BOMB) {
         const pattern = new GridPattern(patern);
         bombs = bombs.concat(FindPatternInGrid.run(grid, pattern))
     }
-    // Count how many times a ray was found
-    let raysCounter: number = 0
-    let rays = FindPatternInGrid.run(grid, new GridPattern(PATTERNS_RAY))
-    // Count how many times a rainbow was found
-    let rainbowsCounter: number = 0
-    let rainbows = FindPatternInGrid.run(grid, new GridPattern(PATTERNS_RAINBOW))
+    let bombsDict: DictionaryCounter = {}
+    // Totalize Dictionary
+    let fullDict: DictionaryCounter = {}
 
     
     const message = (bombs.length ? 'Bomb ' : '')+(rays.length ? 'Ray ' : '')+(rainbows.length ? 'Rainbow ' : '')
@@ -61,15 +63,16 @@ const verifySpecialGemsGeneration = async (grid: Grid) => {
         for (const rainbow of rainbows) {
             let countDrop = 0 // to select when drop the gem
             for (const coordinate of rainbow) {
-                const currentCell = grid.getCell(coordinate)
+                const currentCell = grid.getCell(coordinate) as string
                 if (currentCell!=EXPLOSION && SPECIAL_GEM_RAINBOW!=currentCell) {
                     let newValue=""
                     if (countDrop==2) {
                         newValue=SPECIAL_GEM_RAINBOW
-                        rainbowsCounter++
                     } else {
                         newValue=EXPLOSION
                     }
+                    rainbowsDict[currentCell] = currentCell in rainbowsDict ? rainbowsDict[currentCell] + 1 : 1
+                    fullDict[currentCell] = currentCell in fullDict ? fullDict[currentCell] + 1 : 1
                     countDrop+=grid.putInCell(coordinate, newValue) ? 1 : 0
                 }
             }
@@ -81,65 +84,68 @@ const verifySpecialGemsGeneration = async (grid: Grid) => {
         for (const bomb of bombs) {
             let countDrop = 0 // to select when drop the gem
             for (const coordinate of bomb) {
-                const currentCell = grid.getCell(coordinate)
+                const currentCell = grid.getCell(coordinate) as string
                 if (currentCell!=EXPLOSION && !SPECIAL_GEMS_BOMB.includes(currentCell as string) && SPECIAL_GEM_RAINBOW!=currentCell) {
                     let newValue=""
                     if (countDrop==2) {
                         newValue=SPECIAL_GEMS_BOMB[GEMS.indexOf(currentCell as string)]
-                        bombsCounter++
                     } else {
                         newValue=EXPLOSION
                     }
+                    bombsDict[currentCell] = currentCell in bombsDict ? bombsDict[currentCell] + 1 : 1
+                    fullDict[currentCell] = currentCell in fullDict ? fullDict[currentCell] + 1 : 1
                     countDrop+=grid.putInCell(coordinate, newValue) ? 1 : 0
                 }
             }
-        }
-        
+        }        
     }
     if (rays.length) {
-        raysCounter++
         // change match4 by explosion and put ray
         for (const ray of rays) {
             let countDrop = 0 // to select when drop the gem
             for (const coordinate of ray) {
-                const currentCell = grid.getCell(coordinate)
+                const currentCell = grid.getCell(coordinate) as string
                 if (currentCell!=EXPLOSION && !SPECIAL_GEMS_RAY_H.includes(currentCell as string) && !SPECIAL_GEMS_BOMB.includes(currentCell as string) && SPECIAL_GEM_RAINBOW!=currentCell) {
                     let newValue=""
                     if (countDrop==2) {
                         newValue=SPECIAL_GEMS_RAY_H[GEMS.indexOf(currentCell as string)]
-                        raysCounter++
                     } else {
                         newValue=EXPLOSION
                     }
+                    raysDict[currentCell] = currentCell in raysDict ? raysDict[currentCell] + 1 : 1
+                    fullDict[currentCell] = currentCell in fullDict ? fullDict[currentCell] + 1 : 1
                     countDrop+= grid.putInCell(coordinate, newValue) ? 1 : 0
                 }
             }
         }
     }
-    return bombsCounter+raysCounter+rainbowsCounter
+
+    return fullDict
 }
 
-const verifyMatch3 = async (grid: Grid): Promise<number> => {
+type DictionaryCounter = { [index: string]: number }
+
+const verifyMatch3 = async (grid: Grid): Promise<DictionaryCounter> => {
     // Count how many times found a match 3
-    let match3Counter: number = 0
     let match3 = FindPatternInGrid.run(grid, new GridPattern([[1,1,1]]))
+    let match3Dict: DictionaryCounter = {}
 
     if (match3.length) {
-        match3Counter++
         // change match3 by explosion
         const exploded: Coordinate[] = []
         for (const m3Coords of match3) {
             for (const coordinate of m3Coords) {
-                const currentCell = grid.getCell(coordinate)
+                const currentCell = grid.getCell(coordinate) as string
                 if (currentCell!=EXPLOSION) {
                     if (grid.putInCell(coordinate, EXPLOSION)) {
                         exploded.push(coordinate)
+                        match3Dict[currentCell] = currentCell in match3Dict ? match3Dict[currentCell] + 1 : 1
                     }
                 }
             }
         }
     }
-    return match3Counter
+    return match3Dict
 }
 
 const verifyPosibleMatches = (grid: Grid) =>{
@@ -166,17 +172,21 @@ const action = async (fromX:number|null=null, fromY:number|null=null, toX:number
         await showRotated(grid.getMatrix() as MatrixToShow)
 
         // verify special gems generation
-        let specialGemsCreated = await verifySpecialGemsGeneration(grid)
+        let specialGemsDict = await verifySpecialGemsGeneration(grid)
+        let specialGemsCreated = Object.values(specialGemsDict).length==0 ? 0 : Object.values(specialGemsDict).reduce((accumulator, current) => accumulator + current);
         // verify match 3
-        let match3Counter = await verifyMatch3(grid)
+        let match3DictCounter = await verifyMatch3(grid)
+        let match3Counter = Object.values(match3DictCounter).length==0 ? 0 : Object.values(match3DictCounter).reduce((accumulator, current) => accumulator + current);
 
         const rightMovement = !!(match3Counter+specialGemsCreated) // if generated gems or match3 found it's right movement
         do {
             await explodeRemoveFill(grid)
             // verify special gems generation
-            specialGemsCreated = await verifySpecialGemsGeneration(grid)
+            specialGemsDict = await verifySpecialGemsGeneration(grid)
+            specialGemsCreated = Object.values(specialGemsDict).length==0 ? 0 : Object.values(specialGemsDict).reduce((accumulator, current) => accumulator + current);
             // verify match 3
-            match3Counter = await verifyMatch3(grid)   
+            match3DictCounter = await verifyMatch3(grid)
+            match3Counter = Object.values(match3DictCounter).length==0 ? 0 : Object.values(match3DictCounter).reduce((accumulator, current) => accumulator + current);
         } while (specialGemsCreated+match3Counter)
 
         if (fromX && fromY && toX && toY && !rightMovement) {
